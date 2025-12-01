@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nós - AURELLÉ Joalheria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .timeline-item {
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, #d97706, #f59e0b);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            background: #d97706;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #d97706;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-carousel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .testimonial-slide {
+            min-width: 100%;
+            padding: 0 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .testimonial-slide {
+                min-width: 50%;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .testimonial-slide {
+                min-width: 33.333%;
+            }
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.4), rgba(217, 119, 6, 0.4));
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            font-weight: bold;
+        }
+
+        .carousel-arrow:hover {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-arrow.prev {
+            left: 10px;
+        }
+
+        .carousel-arrow.next {
+            right: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header/Navbar -->
+    <header class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="index.html" class="title-font text-2xl font-bold text-gray-800">AURELLÉ</a>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-700 hover:text-yellow-600 font-medium">Início</a>
+                <a href="colecoes.html" class="text-gray-700 hover:text-yellow-600 font-medium">Coleções</a>
+                <a href="relogios.html" class="text-gray-700 hover:text-yellow-600 font-medium">Relógios</a>
+                <a href="sobre.html" class="text-yellow-600 font-medium">Sobre Nós</a>
+                <a href="contato.php" class="text-gray-700 hover:text-yellow-600 font-medium">Contato</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <a href="javascript:void(0)" id="search-button" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-search"></i></a>
+                <a href="conta.html" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-user"></i></a>
+                <a href="carrinho.html" class="text-gray-700 hover:text-yellow-600 relative">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">0</span>
+                </a>
+                <button class="md:hidden text-gray-700" id="mobile-menu-button">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="md:hidden mobile-menu fixed top-16 left-0 w-full h-screen bg-white shadow-md" id="mobile-menu">
+            <div class="p-4">
+                <a href="index.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Início</a>
+                <a href="colecoes.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Coleções</a>
+                <a href="relogios.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Relógios</a>
+                <a href="sobre.html" class="block py-3 text-yellow-600 border-b border-gray-200">Sobre Nós</a>
+                <a href="contato.php" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Contato</a>
+                <a href="conta.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Minha Conta</a>
+                <a href="carrinho.html" class="block py-3 text-gray-700 hover:text-yellow-600">Carrinho</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-yellow-600 to-yellow-700 text-white py-20 pt-24">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="title-font text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Nossa História</h1>
+            <p class="text-lg sm:text-xl max-w-2xl mx-auto">Conheça a trajetória da AURELLÉ e nossa paixão pela joalheria finissima</p>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2">
+                    <h2 class="title-font text-3xl md:text-4xl font-bold text-gray-800 mb-6">A Arte da Joalheria Finissima</h2>
+                    <p class="text-gray-600 mb-6 text-lg">Desde 1985, a AURELLÉ vem encantando clientes com peças exclusivas que combinam artesanato tradicional com design contemporâneo. Nossa paixão pela excelência nos levou a criar joias que são verdadeiras obras de arte.</p>
+                    <p class="text-gray-600 mb-6 text-lg">Cada peça é cuidadosamente elaborada por nossos mestres joalheiros, utilizando apenas os melhores materiais e gemas selecionadas a dedo. Acreditamos que joias devem contar histórias e se tornar heranças familiares.</p>
+                    <p class="text-gray-600 text-lg">Nossa missão é criar peças únicas que celebrem os momentos mais especiais da vida, mantendo viva a tradição da joalheria artesanal brasileira.</p>
+                </div>
+                <div class="lg:w-1/2">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="rounded-lg overflow-hidden shadow-lg">
+                            <img src="img/imagem sobre 1.png" alt="Equipe AURELLÉ em ação" class="w-full h-full object-cover">
+                        </div>
+                        <div class="rounded-lg overflow-hidden shadow-lg">
+                            <img src="img/imagem sobre 2.png" alt="Oficina AURELLÉ" class="w-full h-full object-cover">
+                        </div>
+                        <div class="rounded-lg overflow-hidden shadow-lg">
+                            <img src="img/imagem sobre 3.png" alt="Materiais Nobres" class="w-full h-full object-cover">
+                        </div>
+                        <div class="rounded-lg overflow-hidden shadow-lg">
+                            <img src="img/imagem sobre 4.png" alt="Design Exclusivo" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="title-font text-3xl md:text-4xl font-bold text-gray-800 mb-4">Nossa Jornada</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Momentos marcantes que construíram a história da AURELLÉ</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="timeline-item pl-8 mb-8">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">1985 - O Início</h3>
+                        <p class="text-gray-600">Fundação da AURELLÉ pelo mestre joalheiro Antônio Silva, com uma pequena oficina no centro de São Paulo.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item pl-8 mb-8">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">1995 - Primeira Loja</h3>
+                        <p class="text-gray-600">Abertura da primeira loja física na Avenida Paulista, marcando o crescimento da marca.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item pl-8 mb-8">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">2005 - Reconhecimento</h3>
+                        <p class="text-gray-600">A AURELLÉ recebe o prêmio de "Melhor Joalheria Artesanal" do Brasil.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item pl-8 mb-8">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">2015 - Expansão</h3>
+                        <p class="text-gray-600">Abertura de novas lojas e lançamento da primeira coleção online da marca.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item pl-8">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">2024 - Inovação</h3>
+                        <p class="text-gray-600">Lançamento de novas tecnologias e expansão para o mercado internacional.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="stats-card text-center p-8 rounded-lg">
+                    <div class="text-4xl font-bold mb-2">39</div>
+                    <div class="text-lg">Anos de Experiência</div>
+                </div>
+                
+                <div class="stats-card text-center p-8 rounded-lg">
+                    <div class="text-4xl font-bold mb-2">50K+</div>
+                    <div class="text-lg">Clientes Satisfeitos</div>
+                </div>
+                
+                <div class="stats-card text-center p-8 rounded-lg">
+                    <div class="text-4xl font-bold mb-2">15</div>
+                    <div class="text-lg">Mestres Joalheiros</div>
+                </div>
+                
+                <div class="stats-card text-center p-8 rounded-lg">
+                    <div class="text-4xl font-bold mb-2">100%</div>
+                    <div class="text-lg">Qualidade Garantida</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="title-font text-3xl md:text-4xl font-bold text-gray-800 mb-4">Depoimentos dos Clientes</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Veja o que nossos clientes dizem sobre a AURELLÉ</p>
+            </div>
+            
+            <div class="testimonial-carousel">
+                <div class="testimonial-track" id="testimonial-track">
+                    <div class="testimonial-slide">
+                        <div class="bg-white rounded-lg overflow-hidden shadow-md p-6 h-full border-l-4 border-yellow-600">
+                            <div class="flex justify-start mb-4">
+                                <i class="fas fa-quote-left text-yellow-600 text-2xl opacity-30"></i>
+                            </div>
+                            <p class="text-gray-700 mb-6 text-base leading-relaxed font-medium">Adorei meu anel de noivado! A qualidade é impecável e o design é exatamente o que eu imaginava. A equipe da AURELLÉ foi muito atenciosa durante todo o processo.</p>
+                            <div class="flex justify-start mb-3">
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                            </div>
+                            <h3 class="title-font font-bold text-gray-800 text-sm mb-1">Ana Carolina</h3>
+                            <p class="text-yellow-600 font-medium text-xs">✓ Cliente Verificada</p>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-slide">
+                        <div class="bg-white rounded-lg overflow-hidden shadow-md p-6 h-full border-l-4 border-yellow-600">
+                            <div class="flex justify-start mb-4">
+                                <i class="fas fa-quote-left text-yellow-600 text-2xl opacity-30"></i>
+                            </div>
+                            <p class="text-gray-700 mb-6 text-base leading-relaxed font-medium">Comprei uma pulseira e fiquei impressionado com o acabamento e atenção aos detalhes. Recomendo a AURELLÉ para qualquer ocasião especial!</p>
+                            <div class="flex justify-start mb-3">
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                            </div>
+                            <h3 class="title-font font-bold text-gray-800 text-sm mb-1">Roberto Silva</h3>
+                            <p class="text-yellow-600 font-medium text-xs">✓ Cliente Verificado</p>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-slide">
+                        <div class="bg-white rounded-lg overflow-hidden shadow-md p-6 h-full border-l-4 border-yellow-600">
+                            <div class="flex justify-start mb-4">
+                                <i class="fas fa-quote-left text-yellow-600 text-2xl opacity-30"></i>
+                            </div>
+                            <p class="text-gray-700 mb-6 text-base leading-relaxed font-medium">Recebi meu colar como presente e é simplesmente lindo! As peças da AURELLÉ são verdadeiras obras de arte que valem cada centavo investido.</p>
+                            <div class="flex justify-start mb-3">
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                            </div>
+                            <h3 class="title-font font-bold text-gray-800 text-sm mb-1">Juliana Costa</h3>
+                            <p class="text-yellow-600 font-medium text-xs">✓ Cliente Verificada</p>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-slide">
+                        <div class="bg-white rounded-lg overflow-hidden shadow-md p-6 h-full border-l-4 border-yellow-600">
+                            <div class="flex justify-start mb-4">
+                                <i class="fas fa-quote-left text-yellow-600 text-2xl opacity-30"></i>
+                            </div>
+                            <p class="text-gray-700 mb-6 text-base leading-relaxed font-medium">Meu noivo fez o pedido com o anel da AURELLÉ e foi perfeito! A qualidade e elegância da peça tornaram o momento ainda mais especial.</p>
+                            <div class="flex justify-start mb-3">
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                            </div>
+                            <h3 class="title-font font-bold text-gray-800 text-sm mb-1">Marina Santos</h3>
+                            <p class="text-yellow-600 font-medium text-xs">✓ Cliente Verificada</p>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-slide">
+                        <div class="bg-white rounded-lg overflow-hidden shadow-md p-6 h-full border-l-4 border-yellow-600">
+                            <div class="flex justify-start mb-4">
+                                <i class="fas fa-quote-left text-yellow-600 text-2xl opacity-30"></i>
+                            </div>
+                            <p class="text-gray-700 mb-6 text-base leading-relaxed font-medium">Comprei brincos para minha mãe e ela amou! O acabamento é impecável, a entrega foi rápida e o atendimento da equipe foi excelente.</p>
+                            <div class="flex justify-start mb-3">
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                            </div>
+                            <h3 class="title-font font-bold text-gray-800 text-sm mb-1">Pedro Oliveira</h3>
+                            <p class="text-yellow-600 font-medium text-xs">✓ Cliente Verificado</p>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-slide">
+                        <div class="bg-white rounded-lg overflow-hidden shadow-md p-6 h-full border-l-4 border-yellow-600">
+                            <div class="flex justify-start mb-4">
+                                <i class="fas fa-quote-left text-yellow-600 text-2xl opacity-30"></i>
+                            </div>
+                            <p class="text-gray-700 mb-6 text-base leading-relaxed font-medium">Há anos compro na AURELLÉ e nunca me decepcionei. Cada peça é um investimento que vale a pena e se torna uma herança familiar.</p>
+                            <div class="flex justify-start mb-3">
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                                <i class="fas fa-star text-yellow-600 text-xs"></i>
+                            </div>
+                            <h3 class="title-font font-bold text-gray-800 text-sm mb-1">Fernanda Rocha</h3>
+                            <p class="text-yellow-600 font-medium text-xs">✓ Cliente Verificada</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="carousel-arrow prev" onclick="moveCarousel(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-arrow next" onclick="moveCarousel(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="title-font text-3xl md:text-4xl font-bold text-gray-800 mb-4">Nossos Valores</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Os princípios que guiam nosso trabalho e relacionamento com os clientes</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-gem text-3xl text-yellow-600"></i>
+                    </div>
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-4">Qualidade</h3>
+                    <p class="text-gray-600">Utilizamos apenas os melhores materiais e técnicas para criar peças que duram gerações.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-heart text-3xl text-yellow-600"></i>
+                    </div>
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-4">Paixão</h3>
+                    <p class="text-gray-600">Cada peça é criada com amor e dedicação, refletindo nossa paixão pela joalheria.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-handshake text-3xl text-yellow-600"></i>
+                    </div>
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-4">Confiança</h3>
+                    <p class="text-gray-600">Construímos relacionamentos duradouros baseados na confiança e transparência.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="title-font text-3xl md:text-4xl font-bold mb-6">Faça Parte da Nossa História</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Visite nossa loja e descubra peças únicas que se tornarão parte da sua história</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="colecoes.html" class="bg-white text-yellow-600 hover:bg-gray-100 font-bold py-3 px-8 rounded-full inline-block transition duration-300">Ver Coleções</a>
+                <a href="contato.php" class="border-2 border-white text-white hover:bg-white hover:text-yellow-600 font-bold py-3 px-8 rounded-full inline-block transition duration-300">Agendar Visita</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-start justify-center pt-24 z-50">
+        <div class="bg-white w-11/12 max-w-2xl rounded-lg p-4 shadow-lg">
+            <div class="flex items-center">
+                <i class="fas fa-search text-gray-500 mr-3"></i>
+                <input id="site-search-input" type="text" placeholder="Buscar produtos..." class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600">
+                <button id="search-close" class="ml-3 text-gray-500 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-yellow-600 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="title-font text-xl font-bold mb-4">AURELLÉ</h3>
+                    <p class="text-yellow-100 text-sm">Joalheria finissima desde 1985. Criando peças que se tornam heranças familiares.</p>
+                    <div class="flex mt-6 space-x-4">
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Links Rápidos</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="text-yellow-100 hover:text-white">Início</a></li>
+                        <li><a href="colecoes.html" class="text-yellow-100 hover:text-white">Coleções</a></li>
+                        <li><a href="sobre.html" class="text-yellow-100 hover:text-white">Sobre Nós</a></li>
+                        <li><a href="contato.php" class="text-yellow-100 hover:text-white">Contato</a></li>
+                        <li><a href="admin_login.php" class="text-yellow-100 hover:text-white">Admin</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Serviços</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Design Personalizado</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Manutenção de Joias</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Avaliação de Gemas</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Presentes Corporativos</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Informações</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Trocas e Devoluções</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Perguntas Frequentes</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-yellow-700 mt-12 pt-8 text-center text-yellow-100 text-sm">
+                <p>&copy; 2024 AURELLÉ Joalheria. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            cartCount.textContent = cart.length;
+        }
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+            }
+        });
+
+        // Initialize cart count
+        updateCartCount();
+
+        // Search overlay
+        (function() {
+            const openBtn = document.getElementById('search-button');
+            const overlay = document.getElementById('search-overlay');
+            const closeBtn = document.getElementById('search-close');
+            const input = document.getElementById('site-search-input');
+
+            function openOverlay() {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                setTimeout(() => input && input.focus(), 50);
+            }
+            function closeOverlay() {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+            if (openBtn && overlay) {
+                openBtn.addEventListener('click', openOverlay);
+            }
+            if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
+            overlay && overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverlay(); });
+            input && input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const q = input.value.trim();
+                    if (q) {
+                        window.location.href = `colecoes.html?q=${encodeURIComponent(q)}`;
+                    }
+                }
+            });
+        })();
+
+        // Testimonial carousel functionality
+        let currentIndex = 0;
+        const track = document.getElementById('testimonial-track');
+        const slides = document.querySelectorAll('.testimonial-slide');
+        const totalSlides = slides.length;
+
+        function updateCarousel() {
+            let slidesToShow = 1;
+            if (window.innerWidth >= 768) slidesToShow = 2;
+            if (window.innerWidth >= 1024) slidesToShow = 3;
+
+            const slideWidth = 100 / slidesToShow;
+            const offset = -currentIndex * slideWidth;
+            track.style.transform = `translateX(${offset}%)`;
+        }
+
+        function moveCarousel(direction) {
+            let slidesToShow = 1;
+            if (window.innerWidth >= 768) slidesToShow = 2;
+            if (window.innerWidth >= 1024) slidesToShow = 3;
+
+            currentIndex += direction;
+            
+            if (currentIndex > totalSlides - slidesToShow) {
+                currentIndex = 0;
+            }
+            if (currentIndex < 0) {
+                currentIndex = totalSlides - slidesToShow;
+            }
+            
+            updateCarousel();
+        }
+
+        window.addEventListener('resize', updateCarousel);
+        updateCarousel();
+    </script>
+</body>
+</html>

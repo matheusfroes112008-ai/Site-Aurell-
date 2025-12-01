@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento - AURELLÉ Joalheria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .payment-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .security-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .form-input:focus {
+            border-color: #d97706;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
+        }
+
+        .payment-method:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header/Navbar -->
+    <header class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="index.html" class="title-font text-2xl font-bold text-gray-800">AURELLÉ</a>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-700 hover:text-yellow-600 font-medium">Início</a>
+                <a href="colecoes.html" class="text-gray-700 hover:text-yellow-600 font-medium">Coleções</a>
+                <a href="relogios.html" class="text-gray-700 hover:text-yellow-600 font-medium">Relógios</a>
+                <a href="sobre.html" class="text-gray-700 hover:text-yellow-600 font-medium">Sobre Nós</a>
+                <a href="contato.php" class="text-gray-700 hover:text-yellow-600 font-medium">Contato</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <a href="javascript:void(0)" id="search-button" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-search"></i></a>
+                <a href="conta.html" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-user"></i></a>
+                <a href="carrinho.html" class="text-gray-700 hover:text-yellow-600 relative">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">0</span>
+                </a>
+                <button class="md:hidden text-gray-700" id="mobile-menu-button">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="md:hidden mobile-menu fixed top-16 left-0 w-full h-screen bg-white shadow-md" id="mobile-menu">
+            <div class="p-4">
+                <a href="index.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Início</a>
+                <a href="colecoes.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Coleções</a>
+                <a href="relogios.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Relógios</a>
+                <a href="sobre.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Sobre Nós</a>
+                <a href="contato.php" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Contato</a>
+                <a href="conta.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Minha Conta</a>
+                <a href="carrinho.html" class="block py-3 text-gray-700 hover:text-yellow-600">Carrinho</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-yellow-600 to-yellow-700 text-white py-20 pt-24">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="title-font text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Pagamento Seguro</h1>
+            <p class="text-lg sm:text-xl max-w-2xl mx-auto">Complete sua compra com total segurança e confiança</p>
+        </div>
+    </section>
+
+    <!-- Payment Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Payment Form -->
+                <div class="space-y-8">
+                    <div class="bg-white rounded-lg shadow-lg p-8">
+                        <h2 class="title-font text-2xl font-bold text-gray-800 mb-6">Informações de Pagamento</h2>
+                        
+                        <!-- Payment Methods -->
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-gray-700 mb-4">Método de Pagamento</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="payment-method border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-yellow-600 transition-all duration-300" data-method="credit">
+                                    <div class="flex items-center space-x-3">
+                                        <input type="radio" name="payment-method" value="credit" id="credit" class="text-yellow-600" checked>
+                                        <label for="credit" class="flex items-center space-x-2 cursor-pointer">
+                                            <i class="fas fa-credit-card text-blue-600"></i>
+                                            <span class="font-medium">Cartão de Crédito</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="payment-method border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-yellow-600 transition-all duration-300" data-method="pix">
+                                    <div class="flex items-center space-x-3">
+                                        <input type="radio" name="payment-method" value="pix" id="pix" class="text-yellow-600">
+                                        <label for="pix" class="flex items-center space-x-2 cursor-pointer">
+                                            <i class="fas fa-qrcode text-green-600"></i>
+                                            <span class="font-medium">PIX</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Credit Card Form -->
+                        <div id="credit-card-form" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Número do Cartão</label>
+                                <input type="text" id="card-number" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" placeholder="1234 5678 9012 3456" maxlength="19">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Data de Validade</label>
+                                    <input type="text" id="expiry" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" placeholder="MM/AA" maxlength="5">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">CVV</label>
+                                    <input type="text" id="cvv" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" placeholder="123" maxlength="4">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nome no Cartão</label>
+                                <input type="text" id="card-name" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" placeholder="Nome como está no cartão">
+                            </div>
+                        </div>
+
+                        <!-- PIX Form (Hidden by default) -->
+                        <div id="pix-form" class="space-y-4 hidden">
+                            <div class="text-center p-6 bg-gray-50 rounded-lg">
+                                <i class="fas fa-qrcode text-6xl text-green-600 mb-4"></i>
+                                <p class="text-gray-600 mb-4">Escaneie o QR Code para pagar via PIX</p>
+                                <div class="bg-white p-4 rounded-lg inline-block">
+                                    <div class="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+                                        <span class="text-gray-500 text-sm">QR Code</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Billing Address -->
+                        <div class="mt-8 pt-6 border-t border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-700 mb-4">Endereço de Cobrança</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Endereço</label>
+                                    <input type="text" id="address" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" placeholder="Rua, número, complemento">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Cidade</label>
+                                    <input type="text" id="city" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" placeholder="Cidade">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
+                                    <input type="text" id="state" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" placeholder="Estado">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">CEP</label>
+                                    <input type="text" id="zip" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none" placeholder="00000-000">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="space-y-6">
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h2 class="title-font text-xl font-bold text-gray-800 mb-4">Resumo do Pedido</h2>
+                        <div id="order-items" class="space-y-3 mb-6">
+                            <!-- Order items will be populated here -->
+                        </div>
+                        
+                        <div class="border-t border-gray-200 pt-4 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Subtotal:</span>
+                                <span class="font-medium" id="subtotal">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Frete:</span>
+                                <span class="font-medium" id="shipping">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Desconto:</span>
+                                <span class="font-medium text-green-600" id="discount">-R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between text-lg font-bold border-t border-gray-200 pt-2">
+                                <span>Total:</span>
+                                <span class="text-yellow-600" id="total">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Features -->
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Segurança</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-shield-alt text-green-600"></i>
+                                <span class="text-sm text-gray-600">Pagamento criptografado SSL</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-lock text-green-600"></i>
+                                <span class="text-sm text-gray-600">Dados protegidos</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                                <span class="text-sm text-gray-600">Transação segura</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Button -->
+                    <button id="pay-button" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition duration-300 flex items-center justify-center space-x-2">
+                        <i class="fas fa-lock"></i>
+                        <span>Finalizar Compra</span>
+                    </button>
+
+                    <p class="text-xs text-gray-500 text-center">
+                        Ao finalizar sua compra, você concorda com nossos <a href="#" class="text-yellow-600 hover:underline">Termos de Serviço</a> e <a href="#" class="text-yellow-600 hover:underline">Política de Privacidade</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-start justify-center pt-24 z-50">
+        <div class="bg-white w-11/12 max-w-2xl rounded-lg p-4 shadow-lg">
+            <div class="flex items-center">
+                <i class="fas fa-search text-gray-500 mr-3"></i>
+                <input id="site-search-input" type="text" placeholder="Buscar produtos..." class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600">
+                <button id="search-close" class="ml-3 text-gray-500 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-yellow-600 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="title-font text-xl font-bold mb-4">AURELLÉ</h3>
+                    <p class="text-yellow-100 text-sm">Joalheria finissima desde 1985. Criando peças que se tornam heranças familiares.</p>
+                    <div class="flex mt-6 space-x-4">
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Links Rápidos</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="text-yellow-100 hover:text-white">Início</a></li>
+                        <li><a href="colecoes.html" class="text-yellow-100 hover:text-white">Coleções</a></li>
+                        <li><a href="relogios.html" class="text-yellow-100 hover:text-white">Relógios</a></li>
+                        <li><a href="sobre.html" class="text-yellow-100 hover:text-white">Sobre Nós</a></li>
+                        <li><a href="contato.php" class="text-yellow-100 hover:text-white">Contato</a></li>
+                         <li><a href="admin_login.php" class="text-yellow-100 hover:text-white">Admin</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Serviços</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Design Personalizado</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Manutenção de Joias</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Avaliação de Gemas</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Presentes Corporativos</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Informações</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Trocas e Devoluções</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Perguntas Frequentes</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-yellow-700 mt-12 pt-8 text-center text-yellow-100 text-sm">
+                <p>&copy; 2024 AURELLÉ Joalheria. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toast-message">Mensagem</span>
+    </div>
+
+    <script>
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            cartCount.textContent = cart.length;
+        }
+
+        // Show toast notification
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            
+            if (isError) {
+                toast.classList.add('error');
+            } else {
+                toast.classList.remove('error');
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 5000);
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(amount);
+        }
+
+        // Calculate order summary
+        function calculateOrderSummary() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = subtotal > 500 ? 0 : 25;
+            const discount = subtotal > 1000 ? subtotal * 0.1 : 0;
+            const total = subtotal + shipping - discount;
+
+            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('shipping').textContent = formatCurrency(shipping);
+            document.getElementById('discount').textContent = formatCurrency(discount);
+            document.getElementById('total').textContent = formatCurrency(total);
+
+            return { subtotal, shipping, discount, total };
+        }
+
+        // Populate order items
+        function populateOrderItems() {
+            const orderItemsContainer = document.getElementById('order-items');
+            orderItemsContainer.innerHTML = '';
+
+            cart.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'flex justify-between items-center';
+                itemElement.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-gem text-gray-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-800">${item.name}</p>
+                            <p class="text-sm text-gray-500">Qtd: ${item.quantity}</p>
+                        </div>
+                    </div>
+                    <span class="font-medium">${formatCurrency(item.price * item.quantity)}</span>
+                `;
+                orderItemsContainer.appendChild(itemElement);
+            });
+        }
+
+        // Payment method toggle
+        document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const method = this.value;
+                const creditForm = document.getElementById('credit-card-form');
+                const pixForm = document.getElementById('pix-form');
+
+                if (method === 'credit') {
+                    creditForm.classList.remove('hidden');
+                    pixForm.classList.add('hidden');
+                } else {
+                    creditForm.classList.add('hidden');
+                    pixForm.classList.remove('hidden');
+                }
+            });
+        });
+
+        // Payment method selection styling
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                // Remove active class from all methods
+                document.querySelectorAll('.payment-method').forEach(m => {
+                    m.classList.remove('border-yellow-600', 'bg-yellow-50');
+                    m.classList.add('border-gray-200');
+                });
+                
+                // Add active class to clicked method
+                this.classList.remove('border-gray-200');
+                this.classList.add('border-yellow-600', 'bg-yellow-50');
+                
+                // Check the radio button
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                radio.dispatchEvent(new Event('change'));
+            });
+        });
+
+        // Card number formatting
+        document.getElementById('card-number').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            e.target.value = value;
+        });
+
+        // Expiry date formatting
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2);
+            }
+            e.target.value = value;
+        });
+
+        // CVV formatting
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Pay button functionality
+        document.getElementById('pay-button').addEventListener('click', function() {
+            const method = document.querySelector('input[name="payment-method"]:checked').value;
+            
+            if (method === 'credit') {
+                // Validate credit card form
+                const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+                const expiry = document.getElementById('expiry').value;
+                const cvv = document.getElementById('cvv').value;
+                const cardName = document.getElementById('card-name').value;
+                
+                if (!cardNumber || !expiry || !cvv || !cardName) {
+                    showToast('Por favor, preencha todos os campos do cartão', true);
+                    return;
+                }
+                
+                if (cardNumber.length < 13 || cardNumber.length > 19) {
+                    showToast('Número do cartão inválido', true);
+                    return;
+                }
+            }
+            
+            // Simulate payment processing
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+            
+            setTimeout(() => {
+                showToast('Pagamento processado com sucesso! Redirecionando...');
+                setTimeout(() => {
+                    // Clear cart and redirect to success page
+                    localStorage.removeItem('cart');
+                    window.location.href = 'index.html';
+                }, 2000);
+            }, 3000);
+        });
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+            }
+        });
+
+        // Initialize page
+        updateCartCount();
+        populateOrderItems();
+        calculateOrderSummary();
+
+        // Check if cart is empty
+        if (cart.length === 0) {
+            showToast('Seu carrinho está vazio. Redirecionando para as coleções...', true);
+            setTimeout(() => {
+                window.location.href = 'colecoes.html';
+            }, 2000);
+        }
+
+        // Search overlay
+        (function() {
+            const openBtn = document.getElementById('search-button');
+            const overlay = document.getElementById('search-overlay');
+            const closeBtn = document.getElementById('search-close');
+            const input = document.getElementById('site-search-input');
+
+            function openOverlay() {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                setTimeout(() => input && input.focus(), 50);
+            }
+            function closeOverlay() {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+            if (openBtn && overlay) {
+                openBtn.addEventListener('click', openOverlay);
+            }
+            if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
+            overlay && overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverlay(); });
+            input && input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const q = input.value.trim();
+                    if (q) {
+                        window.location.href = `colecoes.html?q=${encodeURIComponent(q)}`;
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

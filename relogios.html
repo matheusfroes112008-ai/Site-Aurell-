@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relógios - AURELLÉ Joalheria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .watch-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .product-image {
+            background-color: transparent;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .filter-active {
+            background-color: #d97706;
+            color: white;
+        }
+
+        .watch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .watch-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header/Navbar -->
+    <header class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="index.html" class="title-font text-2xl font-bold text-gray-800">AURELLÉ</a>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-700 hover:text-yellow-600 font-medium">Início</a>
+                <a href="colecoes.html" class="text-gray-700 hover:text-yellow-600 font-medium">Coleções</a>
+                <a href="relogios.html" class="text-yellow-600 font-medium">Relógios</a>
+                <a href="sobre.html" class="text-gray-700 hover:text-yellow-600 font-medium">Sobre Nós</a>
+                <a href="contato.php" class="text-gray-700 hover:text-yellow-600 font-medium">Contato</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <a href="javascript:void(0)" id="search-button" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-search"></i></a>
+                <a href="conta.html" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-user"></i></a>
+                <a href="carrinho.html" class="text-gray-700 hover:text-yellow-600 relative">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">0</span>
+                </a>
+                <button class="md:hidden text-gray-700" id="mobile-menu-button">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="md:hidden mobile-menu fixed top-16 left-0 w-full h-screen bg-white shadow-md" id="mobile-menu">
+            <div class="p-4">
+                <a href="index.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Início</a>
+                <a href="colecoes.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Coleções</a>
+                <a href="relogios.html" class="block py-3 text-yellow-600 border-b border-gray-200">Relógios</a>
+                <a href="sobre.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Sobre Nós</a>
+                <a href="contato.php" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Contato</a>
+                <a href="conta.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Minha Conta</a>
+                <a href="carrinho.html" class="block py-3 text-gray-700 hover:text-yellow-600">Carrinho</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-yellow-600 to-yellow-700 text-white py-20 pt-24">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="title-font text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Relógios de Luxo</h1>
+            <p class="text-lg sm:text-xl max-w-2xl mx-auto">Descubra nossa coleção exclusiva de relógios das melhores marcas do mundo</p>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="py-8 bg-white border-b">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap gap-4 justify-center">
+                <button class="filter-btn filter-active px-6 py-2 rounded-full border-2 border-yellow-600 bg-yellow-600 text-white ring-2 ring-yellow-600 transition duration-300" data-filter="all">Todos</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:border-yellow-600 hover:text-yellow-600 transition duration-300" data-filter="luxury">Luxury</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:border-yellow-600 hover:text-yellow-600 transition duration-300" data-filter="sport">Sport</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:border-yellow-600 hover:text-yellow-600 transition duration-300" data-filter="classic">Clássico</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:border-yellow-600 hover:text-yellow-600 transition duration-300" data-filter="diamond">Diamante</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:border-yellow-600 hover:text-yellow-600 transition duration-300" data-filter="limited">Edição Limitada</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Watches Grid -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="watch-grid" id="watches-grid">
+                <!-- Watch 1 - Rolex Submariner -->
+                <div class="watch-item watch-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="luxury sport">
+                    <div class="relative">
+                        <div class="relative h-64 product-image">
+                            <img src="img/Relógio Masculino Geneva Clássico Preto.jpg" alt="Rolex Submariner" class="w-full h-full object-contain">
+                        </div>
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">NOVO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Rolex Submariner</h3>
+                        <p class="text-gray-600 mb-4">Relógio de mergulho automático</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 45.000,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="rolex-submariner" data-price="45000">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Watch 2 - Cartier Santos -->
+                <div class="watch-item watch-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="luxury classic">
+                    <div class="relative">
+                        <div class="relative h-64 product-image">
+                            <img src="img/Relógio Hugo Boss Chronograph Gold & Brown.jpg" alt="Cartier Santos" class="w-full h-full object-contain">
+                        </div>
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">EXCLUSIVO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Cartier Santos</h3>
+                        <p class="text-gray-600 mb-4">Relógio de aviador automático</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 38.500,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="cartier-santos" data-price="38500">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Watch 3 - Omega Speedmaster -->
+                <div class="watch-item watch-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="sport classic">
+                    <div class="relative">
+                        <div class="relative h-64 product-image">
+                            <img src="img/Relógio Tommy Hilfiger Preto Masculino.jpg" alt="Omega Speedmaster" class="w-full h-full object-contain">
+                        </div>
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">ESGOTANDO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Omega Speedmaster</h3>
+                        <p class="text-gray-600 mb-4">Cronógrafo automático</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 32.800,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="omega-speedmaster" data-price="32800">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Watch 4 - Patek Philippe -->
+                <div class="watch-item watch-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="luxury diamond limited">
+                    <div class="relative">
+                        <div class="relative h-64 product-image">
+                            <img src="img/Relógio Life Feminino Aço.jpg" alt="Patek Philippe" class="w-full h-full object-contain">
+                        </div>
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">LIMITADO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Patek Philippe</h3>
+                        <p class="text-gray-600 mb-4">Relógio de luxo com diamantes</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 125.000,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="patek-philippe" data-price="125000">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Watch 5 - Audemars Piguet -->
+                <div class="watch-item watch-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="luxury sport">
+                    <div class="relative">
+                        <div class="relative h-64 product-image">
+                            <img src="img/Relógio Hugo Boss Feminino Chain Silver.jpg" alt="Audemars Piguet" class="w-full h-full object-contain">
+                        </div>
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">RARO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Audemars Piguet</h3>
+                        <p class="text-gray-600 mb-4">Royal Oak automático</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 89.500,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="audemars-piguet" data-price="89500">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Watch 6 - IWC Portugieser -->
+                <div class="watch-item watch-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="classic luxury">
+                    <div class="relative">
+                        <div class="relative h-64 product-image">
+                            <img src="img/Relógio Feminino Lacoste Rose & White.jpg" alt="IWC Portugieser" class="w-full h-full object-contain">
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">IWC Portugieser</h3>
+                        <p class="text-gray-600 mb-4">Relógio clássico automático</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 42.300,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="iwc-portugieser" data-price="42300">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Watch 7 - Hublot Big Bang -->
+                <div class="watch-item watch-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="sport luxury">
+                    <div class="relative">
+                        <div class="relative h-64 product-image">
+                            <img src="img/Relógio Masculino Geneva Clássico Preto.jpg" alt="Hublot Big Bang" class="w-full h-full object-contain">
+                        </div>
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">NOVO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Hublot Big Bang</h3>
+                        <p class="text-gray-600 mb-4">Relógio esportivo automático</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 67.800,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="hublot-big-bang" data-price="67800">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Watch 8 - Vacheron Constantin -->
+                <div class="watch-item watch-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="luxury classic limited">
+                    <div class="relative">
+                        <div class="relative h-64 product-image">
+                            <img src="img/Relógio Hugo Boss Chronograph Gold & Brown.jpg" alt="Vacheron Constantin" class="w-full h-full object-contain">
+                        </div>
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">LIMITADO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Vacheron Constantin</h3>
+                        <p class="text-gray-600 mb-4">Relógio de luxo clássico</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 156.000,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="vacheron-constantin" data-price="156000">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Watch 9 - Tag Heuer Monaco -->
+                <div class="watch-item watch-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="sport classic">
+                    <div class="relative">
+                        <div class="relative h-64 product-image">
+                            <img src="img/Relógio Tommy Hilfiger Preto Masculino.jpg" alt="Tag Heuer Monaco" class="w-full h-full object-contain">
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Tag Heuer Monaco</h3>
+                        <p class="text-gray-600 mb-4">Cronógrafo esportivo</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 28.900,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="tag-heuer-monaco" data-price="28900">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Watch 10 - Jaeger-LeCoultre -->
+                <div class="watch-item watch-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="luxury classic">
+                    <div class="relative">
+                        <div class="relative h-64 product-image">
+                            <img src="img/Relógio Hugo Boss Feminino Chain Silver.jpg" alt="Jaeger-LeCoultre" class="w-full h-full object-contain">
+                        </div>
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">EXCLUSIVO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Jaeger-LeCoultre</h3>
+                        <p class="text-gray-600 mb-4">Reverso automático</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 52.400,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="jaeger-lecoultre" data-price="52400">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="bg-gray-100 py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="title-font text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Fique por Dentro</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto mb-8">Assine nossa newsletter para receber novidades sobre novos relógios e ofertas exclusivas</p>
+            
+            <form class="max-w-md mx-auto flex flex-col sm:flex-row gap-2" id="newsletter-form">
+                <input type="email" placeholder="Seu melhor e-mail" class="flex-grow px-4 py-3 rounded-lg sm:rounded-l-lg sm:rounded-r-none focus:outline-none focus:ring-2 focus:ring-yellow-600" required>
+                <button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-6 rounded-lg sm:rounded-l-none sm:rounded-r-lg transition duration-300">Assinar</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-start justify-center pt-24 z-50">
+        <div class="bg-white w-11/12 max-w-2xl rounded-lg p-4 shadow-lg">
+            <div class="flex items-center">
+                <i class="fas fa-search text-gray-500 mr-3"></i>
+                <input id="site-search-input" type="text" placeholder="Buscar produtos..." class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600">
+                <button id="search-close" class="ml-3 text-gray-500 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-yellow-600 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="title-font text-xl font-bold mb-4">AURELLÉ</h3>
+                    <p class="text-yellow-100 text-sm">Joalheria finissima desde 1985. Criando peças que se tornam heranças familiares.</p>
+                    <div class="flex mt-6 space-x-4">
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Links Rápidos</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="text-yellow-100 hover:text-white">Início</a></li>
+                        <li><a href="colecoes.html" class="text-yellow-100 hover:text-white">Coleções</a></li>
+                        <li><a href="relogios.html" class="text-yellow-100 hover:text-white">Relógios</a></li>
+                        <li><a href="sobre.html" class="text-yellow-100 hover:text-white">Sobre Nós</a></li>
+                        <li><a href="contato.php" class="text-yellow-100 hover:text-white">Contato</a></li>
+                        <li><a href="admin_login.php" class="text-yellow-100 hover:text-white">Admin</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Serviços</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Design Personalizado</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Manutenção de Relógios</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Avaliação de Joias</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Presentes Corporativos</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Informações</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Trocas e Devoluções</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Perguntas Frequentes</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-yellow-700 mt-12 pt-8 text-center text-yellow-100 text-sm">
+                <p>&copy; 2024 AURELLÉ Joalheria. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    
+
+    <script>
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            cartCount.textContent = cart.length;
+        }
+
+        
+
+        // Filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const watchItems = document.querySelectorAll('.watch-item');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('filter-active');
+                    btn.classList.add('border-gray-300', 'text-gray-600');
+                    btn.classList.remove('border-yellow-600', 'text-yellow-600', 'bg-yellow-600', 'text-white', 'ring-2', 'ring-yellow-600');
+                });
+
+                // Add active class to clicked button
+                button.classList.add('filter-active');
+                button.classList.remove('border-gray-300', 'text-gray-600');
+                button.classList.add('border-yellow-600', 'bg-yellow-600', 'text-white', 'ring-2', 'ring-yellow-600');
+
+                const filter = button.dataset.filter;
+
+                watchItems.forEach(item => {
+                    if (filter === 'all') {
+                        item.style.display = 'block';
+                    } else {
+                        const categories = item.dataset.category.split(' ');
+                        if (categories.includes(filter)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Add to cart functionality
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const product = this.dataset.product;
+                const price = parseFloat(this.dataset.price);
+                
+                // Add to cart
+                cart.push({
+                    id: product,
+                    name: this.closest('.watch-hover').querySelector('h3').textContent,
+                    price: price,
+                    quantity: 1
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Update cart count
+                updateCartCount();
+                
+                // Feedback no botão
+                this.textContent = 'Adicionado!';
+                this.classList.add('bg-green-600');
+                
+                
+                setTimeout(() => {
+                    this.textContent = 'Adicionar ao Carrinho';
+                    this.classList.remove('bg-green-600');
+                }, 2000);
+            });
+        });
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+            }
+        });
+
+        // Newsletter form
+        document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            const btn = this.querySelector('button[type="submit"]');
+            const original = btn.textContent;
+            btn.textContent = 'Assinado!';
+            btn.classList.add('bg-green-600');
+            setTimeout(() => { btn.textContent = original; btn.classList.remove('bg-green-600'); }, 2000);
+            this.reset();
+        });
+
+        // Initialize cart count
+        updateCartCount();
+
+        // Search overlay
+        (function() {
+            const openBtn = document.getElementById('search-button');
+            const overlay = document.getElementById('search-overlay');
+            const closeBtn = document.getElementById('search-close');
+            const input = document.getElementById('site-search-input');
+
+            function openOverlay() {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                setTimeout(() => input && input.focus(), 50);
+            }
+            function closeOverlay() {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+            if (openBtn && overlay) {
+                openBtn.addEventListener('click', openOverlay);
+            }
+            if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
+            overlay && overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverlay(); });
+            input && input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const q = input.value.trim();
+                    if (q) {
+                        window.location.href = `colecoes.html?q=${encodeURIComponent(q)}`;
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

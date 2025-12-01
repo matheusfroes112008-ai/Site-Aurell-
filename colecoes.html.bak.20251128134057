@@ -1,0 +1,928 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coleções - AURELLÉ Joalheria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .jewel-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .product-image {
+            background-color: transparent;
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .filter-active {
+            background-color: #d97706;
+            color: white !important;
+            border-color: #d97706 !important;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-item > .p-6 {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .product-item .add-to-cart {
+            margin-top: auto;
+        }
+
+        @media (max-width: 640px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header/Navbar -->
+    <header class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="index.html" class="title-font text-2xl font-bold text-gray-800">AURELLÉ</a>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-700 hover:text-yellow-600 font-medium">Início</a>
+                <a href="colecoes.html" class="text-yellow-600 font-medium">Coleções</a>
+                <a href="relogios.html" class="text-gray-700 hover:text-yellow-600 font-medium">Relógios</a>
+                <a href="sobre.html" class="text-gray-700 hover:text-yellow-600 font-medium">Sobre Nós</a>
+                <a href="contato.php" class="text-gray-700 hover:text-yellow-600 font-medium">Contato</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <a href="javascript:void(0)" id="search-button" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-search"></i></a>
+                <a href="conta.html" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-user"></i></a>
+                <a href="carrinho.html" class="text-gray-700 hover:text-yellow-600 relative">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">0</span>
+                </a>
+                <button class="md:hidden text-gray-700" id="mobile-menu-button">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="md:hidden mobile-menu fixed top-16 left-0 w-full h-screen bg-white shadow-md" id="mobile-menu">
+            <div class="p-4">
+                <a href="index.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Início</a>
+                <a href="colecoes.html" class="block py-3 text-yellow-600 border-b border-gray-200">Coleções</a>
+                <a href="relogios.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Relógios</a>
+                <a href="sobre.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Sobre Nós</a>
+                <a href="contato.php" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Contato</a>
+                <a href="conta.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Minha Conta</a>
+                <a href="carrinho.html" class="block py-3 text-gray-700 hover:text-yellow-600">Carrinho</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-yellow-600 to-yellow-700 text-white py-20 pt-24">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="title-font text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Nossas Coleções</h1>
+            <p class="text-lg sm:text-xl max-w-2xl mx-auto">Descubra peças exclusivas que combinam tradição e modernidade</p>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="py-8 bg-white border-b">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap gap-4 justify-center">
+                <button class="filter-btn filter-active px-6 py-2 rounded-full border-2 border-yellow-600 text-white hover:bg-yellow-700 transition duration-300" data-filter="all">Todas</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:bg-yellow-600 hover:text-white hover:border-yellow-600 transition duration-300" data-filter="aneis">Anéis</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:bg-yellow-600 hover:text-white hover:border-yellow-600 transition duration-300" data-filter="colares">Colares</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:bg-yellow-600 hover:text-white hover:border-yellow-600 transition duration-300" data-filter="pulseiras">Pulseiras</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:bg-yellow-600 hover:text-white hover:border-yellow-600 transition duration-300" data-filter="brincos">Brincos</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:bg-yellow-600 hover:text-white hover:border-yellow-600 transition duration-300" data-filter="diamante">Diamante</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:bg-yellow-600 hover:text-white hover:border-yellow-600 transition duration-300" data-filter="ouro">Ouro</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:bg-yellow-600 hover:text-white hover:border-yellow-600 transition duration-300" data-filter="perolas">Pérolas</button>
+                <button class="filter-btn px-6 py-2 rounded-full border-2 border-gray-300 text-gray-600 hover:bg-yellow-600 hover:text-white hover:border-yellow-600 transition duration-300" data-filter="noivado">Noivado</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="product-grid" id="products-grid">
+                <!-- Itens de admin (localStorage) serão injetados acima -->
+
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="" data-id="colar-de-p-erolas-6929985373aaa">
+    <div class="relative h-64 product-image">
+        <img src="uploads/1764333651_6929985371e2e.png" alt="Colar de Pérolas" class="w-full h-full object-contain p-2">
+    </div>
+    <div class="p-6 flex flex-col flex-1">
+        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Colar de Pérolas</h3>
+        <p class="text-gray-600 mb-4">aaaa</p>
+        <div class="flex justify-between items-center mb-4">
+            <span class="text-yellow-600 font-bold text-lg">R$ 1.220,00</span>
+            <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="far fa-star"></i>
+            </div>
+        </div>
+        <button class="add-to-cart mt-auto w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="colar-de-p-erolas-6929985373aaa" data-price="1220">Adicionar ao Carrinho</button>
+    </div>
+</div>
+<div class="product-item jewel-hover flex flex-col bg-white rounded-lg overflow-hidden shadow-md" data-category="aneis diamante" data-id="anel-solitario">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Anel Brilho Eterno.png" alt="Anel Solitário" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">NOVO</div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-1">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Anel Solitário</h3>
+                        <p class="text-gray-600 mb-4">Diamante 0.5ct em ouro 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 5.890,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart mt-auto w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="anel-solitario" data-price="5890">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="brincos diamante" data-id="brincos-safira">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Brincos Ear Cuff em Ouro Branco 18k com Diamantes.png" alt="Brincos Safira" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">ESGOTANDO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Brincos Safira</h3>
+                        <p class="text-gray-600 mb-4">Safiras azuis em ouro 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 4.250,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="brincos-safira" data-price="4250">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="pulseiras ouro" data-id="pulseira-ouro">
+                    <div class="relative h-64 product-image">
+                        <img src="img/pulseira ouro.png" alt="Pulseira Ouro" class="w-full h-full object-contain p-2">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Pulseira Ouro</h3>
+                        <p class="text-gray-600 mb-4">Ouro 18k com design italiano</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 3.890,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="pulseira-ouro" data-price="3890">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 5 -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="aneis noivado" data-id="anel-noivado">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Anel Coração e Borboleta em Ouro 18k com Diamantes.jpg" alt="Anel de Noivado" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">ROMÂNTICO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Anel de Noivado</h3>
+                        <p class="text-gray-600 mb-4">Diamante 1ct em ouro branco 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 12.500,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="anel-noivado" data-price="12500">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 6 -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="brincos perolas" data-id="brincos-perolas">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Brincos Cascata de Pérolas em Prata 925.jpg" alt="Brincos Pérolas" class="w-full h-full object-contain p-2">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Brincos Pérolas</h3>
+                        <p class="text-gray-600 mb-4">Pérolas naturais com ouro 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 2.890,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="brincos-perolas" data-price="2890">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 7 - Anel Esmeralda -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="aneis ouro" data-id="anel-esmeralda">
+                    <div class="relative h-64 product-image">
+                        <img src="img/anel ouro.png" alt="Anel Esmeralda" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">NOVO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Anel Esmeralda</h3>
+                        <p class="text-gray-600 mb-4">Esmeralda natural em ouro amarelo 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 7.890,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="anel-esmeralda" data-price="7890">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 8 - Colar Diamante -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="colares diamante" data-id="colar-diamante">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Colar Riviera em Ouro Branco 18k com Diamantes em Gota.jpg" alt="Colar Diamante" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">EXCLUSIVO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Colar Diamante</h3>
+                        <p class="text-gray-600 mb-4">Diamantes em ouro branco 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 15.900,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="colar-diamante" data-price="15900">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 9 - Pulseira Safira -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="pulseiras ouro" data-id="pulseira-rubi">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Pulseira Elegance Rubi em Ouro 18k.jpg" alt="Pulseira Rubi" class="w-full h-full object-contain p-2">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Pulseira Rubi</h3>
+                        <p class="text-gray-600 mb-4">Pedra de rubi em ouro 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 6.750,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="pulseira-rubi" data-price="6750">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 10 - Brincos Ouro -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="brincos ouro" data-id="brincos-ouro">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Brincos Elegância Azul.jpg" alt="Brincos Ouro" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">CLÁSSICO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Brincos Ouro</h3>
+                        <p class="text-gray-600 mb-4">Ouro 18k com design minimalista</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 2.450,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="brincos-ouro" data-price="2450">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 11 - Anel Rubi -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="aneis noivado" data-id="anel-rubi">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Anel Rosa Encantada.png" alt="Anel Rubi" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">ROMÂNTICO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Anel Rubi</h3>
+                        <p class="text-gray-600 mb-4">Rubi natural em prata 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 8.900,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="anel-rubi" data-price="8900">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 12 - Colar Ouro -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="colares ouro" data-id="colar-ouro">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Colar Dois Corações em Ouro Rosé 18k.jpg" alt="Colar Ouro" class="w-full h-full object-contain p-2">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Colar Ouro</h3>
+                        <p class="text-gray-600 mb-4">Ouro 18k com design italiano</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 4.890,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="colar-ouro" data-price="4890">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 13 - Pulseira Pérolas -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="pulseiras perolas" data-id="pulseira-perolas">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Pulseira Pérola Encanto em Ouro Branco.png" alt="Pulseira Pérolas" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">ELEGANTE</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Pulseira Pérolas</h3>
+                        <p class="text-gray-600 mb-4">Pérolas cultivadas com ouro 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 3.650,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="pulseira-perolas" data-price="3650">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 14 - Brincos Diamante -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="brincos diamante" data-id="brincos-diamante">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Brincos Ear Cuff em Ouro Branco 18k com Diamantes.png" alt="Brincos Diamante" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">EXCLUSIVO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Brincos Diamante</h3>
+                        <p class="text-gray-600 mb-4">Diamantes em ouro branco 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 9.800,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="brincos-diamante" data-price="9800">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 15 - Anel Safira -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="aneis diamante" data-id="anel-safira">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Anel em Ouro Branco 18k com Topázios Azuis e Diamantes.png" alt="Anel Safira" class="w-full h-full object-contain p-2">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Anel Safira</h3>
+                        <p class="text-gray-600 mb-4">Safira azul em ouro branco 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 6.450,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="anel-safira" data-price="6450">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 16 - Colar Safira -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="colares diamante" data-id="colar-safira">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Colar em Prata 925 com Zircônia Azul e Detalhes Cravejados.png" alt="Colar Safira" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">RARO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Colar Safira</h3>
+                        <p class="text-gray-600 mb-4">Safiras azuis em ouro branco 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 12.800,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="colar-safira" data-price="12800">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 17 - Pulseira Diamante -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="pulseiras diamante" data-id="pulseira-diamante">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Pulseira Riviera em Ouro Branco com Diamantes.png" alt="Pulseira Diamante" class="w-full h-full object-contain p-2">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">NOVO</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Pulseira Diamante</h3>
+                        <p class="text-gray-600 mb-4">Diamantes em ouro branco 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 18.500,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="pulseira-diamante" data-price="18500">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Product 18 - Brincos Pérolas -->
+                <div class="product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md" data-category="brincos perolas" data-id="brincos-perolas-2">
+                    <div class="relative h-64 product-image">
+                        <img src="img/Brincos Cascata de Pérolas em Prata 925.jpg" alt="Brincos Pérolas" class="w-full h-full object-contain p-2">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Brincos Pérolas</h3>
+                        <p class="text-gray-600 mb-4">Pérolas naturais com ouro 18k</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-yellow-600 font-bold text-lg">R$ 3.200,00</span>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="brincos-perolas-2" data-price="3200">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="bg-gray-100 py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="title-font text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6">Fique por Dentro</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto mb-8">Assine nossa newsletter para receber novidades sobre novas coleções e ofertas exclusivas</p>
+            
+            <form class="max-w-md mx-auto flex flex-col sm:flex-row gap-2" id="newsletter-form">
+                <input type="email" placeholder="Seu melhor e-mail" class="flex-grow px-4 py-3 rounded-lg sm:rounded-l-lg sm:rounded-r-none focus:outline-none focus:ring-2 focus:ring-yellow-600" required>
+                <button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-6 rounded-lg sm:rounded-l-none sm:rounded-r-lg transition duration-300">Assinar</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-start justify-center pt-24 z-50">
+        <div class="bg-white w-11/12 max-w-2xl rounded-lg p-4 shadow-lg">
+            <div class="flex items-center">
+                <i class="fas fa-search text-gray-500 mr-3"></i>
+                <input id="site-search-input" type="text" placeholder="Buscar produtos..." class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600">
+                <button id="search-close" class="ml-3 text-gray-500 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-yellow-600 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="title-font text-xl font-bold mb-4">AURELLÉ</h3>
+                    <p class="text-yellow-100 text-sm">Joalheria finissima desde 1985. Criando peças que se tornam heranças familiares.</p>
+                    <div class="flex mt-6 space-x-4">
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Links Rápidos</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="text-yellow-100 hover:text-white">Início</a></li>
+                        <li><a href="colecoes.html" class="text-yellow-100 hover:text-white">Coleções</a></li>
+                        <li><a href="relogios.html" class="text-yellow-100 hover:text-white">Relógios</a></li>
+                        <li><a href="sobre.html" class="text-yellow-100 hover:text-white">Sobre Nós</a></li>
+                        <li><a href="contato.php" class="text-yellow-100 hover:text-white">Contato</a></li>
+                        <li><a href="admin_login.php" class="text-yellow-100 hover:text-white">Admin</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Serviços</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Design Personalizado</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Manutenção de Joias</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Avaliação de Gemas</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Presentes Corporativos</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Informações</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Trocas e Devoluções</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Perguntas Frequentes</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-yellow-700 mt-12 pt-8 text-center text-yellow-100 text-sm">
+                <p>&copy; 2024 AURELLÉ Joalheria. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toast-message">Produto adicionado ao carrinho!</span>
+    </div>
+
+    <script>
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+        function saveWishlist() {
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        }
+
+        function isInWishlist(id) {
+            return wishlist.some(item => item.id === id);
+        }
+
+        function buildProductData(card) {
+            const id = card.dataset.id || card.dataset.productId || card.querySelector('.add-to-cart')?.dataset.product || '';
+            const name = card.querySelector('h3, h4')?.textContent?.trim() || 'Produto';
+            const priceAttr = card.querySelector('.add-to-cart')?.dataset.price || card.dataset.price || '0';
+            const price = parseFloat(priceAttr) || 0;
+            const image = card.querySelector('.relative img')?.getAttribute('src') || '';
+
+            return { id, name, price, image };
+        }
+
+        function attachWishlistButtons() {
+            document.querySelectorAll('.product-item').forEach(card => {
+                const imageWrapper = card.querySelector('.relative');
+                if (!imageWrapper || imageWrapper.querySelector('.wishlist-toggle')) return;
+
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'wishlist-toggle absolute top-3 left-3 bg-white/90 hover:bg-white text-gray-500 hover:text-red-500 rounded-full p-2 shadow transition duration-300';
+                button.innerHTML = '<i class="far fa-heart"></i>';
+                imageWrapper.appendChild(button);
+            });
+        }
+
+        function updateWishlistButtons() {
+            document.querySelectorAll('.product-item .wishlist-toggle').forEach(button => {
+                const card = button.closest('.product-item');
+                if (!card) return;
+                const productId = card.dataset.id || card.querySelector('.add-to-cart')?.dataset.product || '';
+                const icon = button.querySelector('i');
+                const active = isInWishlist(productId);
+                if (active) {
+                    button.classList.add('text-red-500');
+                    button.classList.remove('text-gray-500');
+                    icon?.classList.remove('far');
+                    icon?.classList.add('fas');
+                } else {
+                    button.classList.remove('text-red-500');
+                    button.classList.add('text-gray-500');
+                    icon?.classList.remove('fas');
+                    icon?.classList.add('far');
+                }
+            });
+        }
+
+        function toggleWishlist(product) {
+            if (!product.id) return;
+            if (isInWishlist(product.id)) {
+                wishlist = wishlist.filter(item => item.id !== product.id);
+                saveWishlist();
+                updateWishlistButtons();
+                showToast('Produto removido da lista de desejos.');
+            } else {
+                wishlist.push(product);
+                saveWishlist();
+                updateWishlistButtons();
+                showToast('Produto adicionado à lista de desejos!');
+            }
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            cartCount.textContent = cart.length;
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            
+            // Remove any existing show class first
+            toast.classList.remove('show');
+            
+            // Force a reflow to ensure the transition works
+            toast.offsetHeight;
+            
+            // Add show class
+            toast.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Inject admin products from localStorage (admin_products)
+        (function injectAdminProducts(){
+            try {
+                const saved = JSON.parse(localStorage.getItem('admin_products')) || [];
+                if (!saved.length) return;
+                const grid = document.getElementById('products-grid');
+                const fragment = document.createDocumentFragment();
+                saved.forEach(p => {
+                    const item = document.createElement('div');
+                    item.className = 'product-item jewel-hover bg-white rounded-lg overflow-hidden shadow-md';
+                    item.setAttribute('data-id', p.id);
+                    item.setAttribute('data-price', p.price);
+                    item.setAttribute('data-category', (p.categories || '').trim());
+                    item.innerHTML = `
+                        <div class="relative h-64 product-image">
+                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain p-2">
+                            ${p.badge ? `<div class=\"absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full\">${p.badge}</div>` : ''}
+                        </div>
+                        <div class="p-6">
+                            <h3 class="title-font text-xl font-bold text-gray-800 mb-2">${p.name}</h3>
+                            <p class="text-gray-600 mb-4">${p.desc || ''}</p>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-yellow-600 font-bold text-lg">R$ ${Number(p.price).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                                </div>
+                            </div>
+                            <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300" data-product="${p.id}" data-price="${p.price}">Adicionar ao Carrinho</button>
+                        </div>`;
+                    fragment.appendChild(item);
+                });
+                if (grid) {
+                    grid.insertBefore(fragment, grid.firstChild);
+                    attachWishlistButtons();
+                    updateWishlistButtons();
+                }
+            } catch(e) {}
+        })();
+
+        // Filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const productItems = document.querySelectorAll('.product-item');
+        const hiddenSet = new Set((JSON.parse(localStorage.getItem('hidden_products')) || []));
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('filter-active');
+                    btn.classList.remove('bg-yellow-600', 'text-white', 'border-yellow-600');
+                    btn.classList.add('border-gray-300', 'text-gray-600');
+                });
+
+                // Add active class to clicked button
+                button.classList.add('filter-active');
+
+                const filter = button.dataset.filter;
+
+                productItems.forEach(item => {
+                    const isHidden = hiddenSet.has(item.dataset.id);
+                    if (isHidden) { item.style.display = 'none'; return; }
+                    if (filter === 'all') {
+                        item.style.display = 'block';
+                    } else {
+                        const categories = (item.dataset.category || '').split(' ');
+                        item.style.display = categories.includes(filter) ? 'block' : 'none';
+                    }
+                });
+            });
+        });
+
+        // Add to cart functionality (delegate to handle injected buttons)
+        document.addEventListener('click', function(e) {
+            const wishlistBtn = e.target.closest('.wishlist-toggle');
+            if (wishlistBtn) {
+                const card = wishlistBtn.closest('.product-item');
+                if (card) {
+                    const productData = buildProductData(card);
+                    toggleWishlist(productData);
+                }
+                return;
+            }
+
+            const btn = e.target.closest('.add-to-cart');
+            if (!btn) return;
+            const product = btn.dataset.product;
+            const price = parseFloat(btn.dataset.price);
+            cart.push({
+                id: product,
+                name: btn.closest('.jewel-hover').querySelector('h3').textContent,
+                price: price,
+                quantity: 1
+            });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            showToast('Produto adicionado ao carrinho!');
+            btn.textContent = 'Adicionado!';
+            btn.classList.add('bg-green-600');
+            setTimeout(() => { btn.textContent = 'Adicionar ao Carrinho'; btn.classList.remove('bg-green-600'); }, 2000);
+        });
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+            }
+        });
+
+        // Newsletter form
+        document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            
+            // Simulate newsletter subscription
+            showToast('Newsletter assinada com sucesso!');
+            this.reset();
+        });
+
+        // Initialize cart count and apply hidden list once on load
+        updateCartCount();
+        (function applyHiddenOnLoad(){
+            const hidden = new Set((JSON.parse(localStorage.getItem('hidden_products')) || []));
+            document.querySelectorAll('.product-item').forEach(item => {
+                if (hidden.has(item.dataset.id)) item.style.display = 'none';
+            });
+        })();
+
+        attachWishlistButtons();
+        updateWishlistButtons();
+
+        // Search overlay
+        (function() {
+            const openBtn = document.getElementById('search-button');
+            const overlay = document.getElementById('search-overlay');
+            const closeBtn = document.getElementById('search-close');
+            const input = document.getElementById('site-search-input');
+
+            function openOverlay() {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                setTimeout(() => input && input.focus(), 50);
+            }
+            function closeOverlay() {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+            if (openBtn && overlay) {
+                openBtn.addEventListener('click', openOverlay);
+            }
+            if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
+            overlay && overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverlay(); });
+            input && input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const q = input.value.trim();
+                    if (q) {
+                        window.location.href = `colecoes.html?q=${encodeURIComponent(q)}`;
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

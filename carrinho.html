@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho - AURELLÉ Joalheria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .cart-item {
+            transition: all 0.3s ease;
+        }
+
+        .cart-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            background-color: transparent;
+        }
+
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+        }
+
+        .empty-cart {
+            min-height: 400px;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .cart-item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: transparent;
+        }
+
+        .product-image-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header/Navbar -->
+    <header class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="index.html" class="title-font text-2xl font-bold text-gray-800">AURELLÉ</a>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-700 hover:text-yellow-600 font-medium">Início</a>
+                <a href="colecoes.html" class="text-gray-700 hover:text-yellow-600 font-medium">Coleções</a>
+                <a href="sobre.html" class="text-gray-700 hover:text-yellow-600 font-medium">Sobre Nós</a>
+                <a href="contato.html" class="text-gray-700 hover:text-yellow-600 font-medium">Contato</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <a href="javascript:void(0)" id="search-button" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-search"></i></a>
+                <a href="conta.html" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-user"></i></a>
+                <a href="carrinho.html" class="text-yellow-600 relative">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">0</span>
+                </a>
+                <button class="md:hidden text-gray-700" id="mobile-menu-button">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="md:hidden mobile-menu fixed top-16 left-0 w-full h-screen bg-white shadow-md" id="mobile-menu">
+            <div class="p-4">
+                <a href="index.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Início</a>
+                <a href="colecoes.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Coleções</a>
+                <a href="sobre.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Sobre Nós</a>
+                <a href="contato.php" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Contato</a>
+                <a href="conta.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Minha Conta</a>
+                <a href="carrinho.html" class="block py-3 text-yellow-600">Carrinho</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-yellow-600 to-yellow-700 text-white py-20 pt-24">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="title-font text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Seu Carrinho</h1>
+            <p class="text-lg sm:text-xl max-w-2xl mx-auto">Revise seus itens e finalize sua compra</p>
+        </div>
+    </section>
+
+    <!-- Cart Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div id="cart-content">
+                <!-- Cart items will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Empty Cart Template -->
+    <template id="empty-cart-template">
+        <div class="empty-cart flex flex-col items-center justify-center text-center">
+            <div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center mb-8">
+                <i class="fas fa-shopping-bag text-6xl text-gray-400"></i>
+            </div>
+            <h2 class="title-font text-2xl font-bold text-gray-800 mb-4">Seu carrinho está vazio</h2>
+            <p class="text-gray-600 mb-8 max-w-md">Adicione algumas peças lindas ao seu carrinho para começar sua compra</p>
+            <a href="colecoes.html" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-8 rounded-full inline-block transition duration-300">
+                Explorar Coleções
+            </a>
+        </div>
+    </template>
+
+    <!-- Cart Items Template -->
+    <template id="cart-items-template">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Cart Items List -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h2 class="title-font text-xl font-bold text-gray-800 mb-6">Itens do Carrinho</h2>
+                    <div id="cart-items-list" class="space-y-4">
+                        <!-- Cart items will be dynamically loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Continue Shopping -->
+                <div class="text-center">
+                    <a href="colecoes.html" class="text-yellow-600 hover:text-yellow-700 font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Continuar Comprando
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Cart Summary -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-6">Resumo do Pedido</h3>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Subtotal:</span>
+                            <span class="font-medium" id="subtotal">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Frete:</span>
+                            <span class="font-medium" id="shipping">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Desconto:</span>
+                            <span class="font-medium text-green-600" id="discount">-R$ 0,00</span>
+                        </div>
+                        <div class="border-t pt-4">
+                            <div class="flex justify-between">
+                                <span class="text-lg font-bold text-gray-800">Total:</span>
+                                <span class="text-lg font-bold text-yellow-600" id="total">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Coupon Code -->
+                    <div class="mb-6">
+                        <label for="coupon" class="block text-gray-700 font-medium mb-2">Código Promocional</label>
+                        <div class="flex">
+                            <input type="text" id="coupon" placeholder="Digite seu código" class="flex-grow px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-yellow-600">
+                            <button id="apply-coupon" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-r-lg transition duration-300">
+                                Aplicar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Checkout Button -->
+                    <button id="checkout-btn" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-4 px-6 rounded-lg transition duration-300 text-lg mb-4">
+                        Finalizar Compra
+                    </button>
+                    
+                    <!-- Secure Payment Info -->
+                    <div class="text-center text-sm text-gray-500">
+                        <i class="fas fa-lock mr-1"></i>
+                        Pagamento seguro e criptografado
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Cart Item Template -->
+    <template id="cart-item-template">
+        <div class="cart-item bg-gray-50 rounded-lg p-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-20 h-20 product-image-container rounded-lg overflow-hidden flex-shrink-0">
+                    <img src="" alt="" class="cart-item-image">
+                </div>
+                
+                <div class="flex-grow">
+                    <h4 class="font-bold text-gray-800 cart-item-name"></h4>
+                    <p class="text-gray-600 text-sm cart-item-description"></p>
+                    <div class="flex items-center space-x-4 mt-2">
+                        <div class="flex items-center space-x-2">
+                            <label for="quantity" class="text-sm text-gray-600">Qtd:</label>
+                            <input type="number" min="1" max="10" class="quantity-input px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-600" data-item-id="">
+                        </div>
+                        <span class="text-yellow-600 font-bold cart-item-price"></span>
+                    </div>
+                </div>
+                
+                <button class="remove-item text-red-500 hover:text-red-700 transition duration-300" data-item-id="">
+                    <i class="fas fa-trash text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Related Products -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="title-font text-3xl md:text-4xl font-bold text-gray-800 mb-4">Você Também Pode Gostar</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Descubra mais peças exclusivas para complementar sua coleção</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Related Product 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300">
+                    <div class="h-48 product-image flex items-center justify-center">
+                        <img src="img/Anel Brilho Eterno.png" alt="Anel Esmeralda" class="h-full object-contain p-4">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-gray-800 mb-2">Anel Esmeralda</h3>
+                        <p class="text-yellow-600 font-bold mb-3">R$ 3.890,00</p>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300" data-product="anel-esmeralda" data-price="3890" data-image="img/Anel Brilho Eterno.png">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+                
+                <!-- Related Product 2 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300">
+                    <div class="h-48 product-image flex items-center justify-center">
+                        <img src="img/Pulseira Riviera em Ouro Branco com Diamantes.png" alt="Pulseira Rubi" class="h-full object-contain p-4">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-gray-800 mb-2">Pulseira Rubi</h3>
+                        <p class="text-yellow-600 font-bold mb-3">R$ 2.750,00</p>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300" data-product="pulseira-rubi" data-price="2750" data-image="img/Pulseira Riviera em Ouro Branco com Diamantes.png">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+                
+                <!-- Related Product 3 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300">
+                    <div class="h-48 product-image flex items-center justify-center">
+                        <img src="img/Colar Pérolas Duplas em Ouro Amarelo 18k.png" alt="Colar Topázio" class="h-full object-contain p-4">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-gray-800 mb-2">Colar Topázio</h3>
+                        <p class="text-yellow-600 font-bold mb-3">R$ 1.890,00</p>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300" data-product="colar-topazio" data-price="1890" data-image="img/Colar Pérolas Duplas em Ouro Amarelo 18k.png">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+                
+                <!-- Related Product 4 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300">
+                    <div class="h-48 product-image flex items-center justify-center">
+                        <img src="img/Brincos Ear Cuff em Ouro Branco 18k com Diamantes.png" alt="Brincos Ametista" class="h-full object-contain p-4">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-gray-800 mb-2">Brincos Ametista</h3>
+                        <p class="text-yellow-600 font-bold mb-3">R$ 1.650,00</p>
+                        <button class="add-to-cart w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300" data-product="brincos-ametista" data-price="1650" data-image="img/Brincos Ear Cuff em Ouro Branco 18k com Diamantes.png">Adicionar ao Carrinho</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-start justify-center pt-24 z-50">
+        <div class="bg-white w-11/12 max-w-2xl rounded-lg p-4 shadow-lg">
+            <div class="flex items-center">
+                <i class="fas fa-search text-gray-500 mr-3"></i>
+                <input id="site-search-input" type="text" placeholder="Buscar produtos..." class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600">
+                <button id="search-close" class="ml-3 text-gray-500 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-yellow-600 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="title-font text-xl font-bold mb-4">AURELLÉ</h3>
+                    <p class="text-yellow-100 text-sm">Joalheria finissima desde 1985. Criando peças que se tornam heranças familiares.</p>
+                    <div class="flex mt-6 space-x-4">
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Links Rápidos</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="text-yellow-100 hover:text-white">Início</a></li>
+                        <li><a href="colecoes.html" class="text-yellow-100 hover:text-white">Coleções</a></li>
+                        <li><a href="sobre.html" class="text-yellow-100 hover:text-white">Sobre Nós</a></li>
+                        <li><a href="contato.php" class="text-yellow-100 hover:text-white">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Serviços</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Design Personalizado</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Manutenção de Joias</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Avaliação de Gemas</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Presentes Corporativos</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Informações</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Trocas e Devoluções</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Perguntas Frequentes</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-yellow-700 mt-12 pt-8 text-center text-yellow-100 text-sm">
+                <p>&copy; 2024 AURELLÉ Joalheria. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let cartTotal = 0;
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            cartCount.textContent = cart.length;
+        }
+
+        // Format price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(price);
+        }
+
+        // Calculate cart totals
+        function calculateTotals() {
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const shipping = subtotal > 500 ? 0 : 25; // Free shipping over R$ 500
+            const discount = 0; // Could be calculated from coupon codes
+            const total = subtotal + shipping - discount;
+
+            document.getElementById('subtotal').textContent = formatPrice(subtotal);
+            document.getElementById('shipping').textContent = formatPrice(shipping);
+            document.getElementById('discount').textContent = formatPrice(discount);
+            document.getElementById('total').textContent = formatPrice(total);
+
+            return { subtotal, shipping, discount, total };
+        }
+
+        // Get product image based on product ID
+        function getProductImage(productId) {
+            const imageMap = {
+                'brincos-safira': 'img/Brincos Ear Cuff em Ouro Branco 18k com Diamantes.png',
+                'anel-esmeralda': 'img/Anel Brilho Eterno.png',
+                'pulseira-rubi': 'img/Pulseira Riviera em Ouro Branco com Diamantes.png',
+                'colar-topazio': 'img/Colar Pérolas Duplas em Ouro Amarelo 18k.png',
+                'brincos-ametista': 'img/Brincos Ear Cuff em Ouro Branco 18k com Diamantes.png'
+            };
+            
+            return imageMap[productId] || 'img/placeholder.jpg';
+        }
+
+        // Render cart
+        function renderCart() {
+            const cartContent = document.getElementById('cart-content');
+            
+            if (cart.length === 0) {
+                const emptyTemplate = document.getElementById('empty-cart-template');
+                cartContent.innerHTML = emptyTemplate.innerHTML;
+            } else {
+                const itemsTemplate = document.getElementById('cart-items-template');
+                cartContent.innerHTML = itemsTemplate.innerHTML;
+                
+                renderCartItems();
+                calculateTotals();
+            }
+        }
+
+        // Render cart items
+        function renderCartItems() {
+            const cartItemsList = document.getElementById('cart-items-list');
+            const itemTemplate = document.getElementById('cart-item-template');
+            
+            cartItemsList.innerHTML = '';
+            
+            cart.forEach((item, index) => {
+                const itemElement = itemTemplate.content.cloneNode(true);
+                
+                // Set item data
+                itemElement.querySelector('.cart-item-name').textContent = item.name;
+                itemElement.querySelector('.cart-item-price').textContent = formatPrice(item.price * item.quantity);
+                itemElement.querySelector('.cart-item-description').textContent = `Preço unitário: ${formatPrice(item.price)}`;
+                
+                // Set product image - CORREÇÃO AQUI
+                const productImage = itemElement.querySelector('.cart-item-image');
+                productImage.src = item.image || getProductImage(item.id);
+                productImage.alt = item.name;
+                
+                // Set quantity input
+                const quantityInput = itemElement.querySelector('.quantity-input');
+                quantityInput.value = item.quantity;
+                quantityInput.dataset.itemId = index;
+                
+                // Set remove button
+                const removeButton = itemElement.querySelector('.remove-item');
+                removeButton.dataset.itemId = index;
+                
+                cartItemsList.appendChild(itemElement);
+            });
+            
+            // Add event listeners
+            addCartEventListeners();
+        }
+
+        // Add cart event listeners
+        function addCartEventListeners() {
+            // Quantity change
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const itemId = parseInt(this.dataset.itemId);
+                    const newQuantity = parseInt(this.value);
+                    
+                    if (newQuantity > 0 && newQuantity <= 10) {
+                        cart[itemId].quantity = newQuantity;
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        renderCart();
+                    } else {
+                        this.value = cart[itemId].quantity;
+                    }
+                });
+            });
+            
+            // Remove item
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = parseInt(this.dataset.itemId);
+                    cart.splice(itemId, 1);
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    renderCart();
+                    updateCartCount();
+                });
+            });
+        }
+
+        // Add to cart functionality - CORREÇÃO AQUI TAMBÉM
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('add-to-cart')) {
+                const product = e.target.dataset.product;
+                const price = parseFloat(e.target.dataset.price);
+                const name = e.target.closest('.bg-white').querySelector('h3').textContent;
+                const image = e.target.dataset.image;
+                
+                // Add to cart com imagem
+                cart.push({
+                    id: product,
+                    name: name,
+                    price: price,
+                    quantity: 1,
+                    image: image // SALVANDO A IMAGEM NO CARRINHO
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Update cart count
+                updateCartCount();
+                
+                // Show success message
+                e.target.textContent = 'Adicionado!';
+                e.target.classList.add('bg-green-600');
+                
+                setTimeout(() => {
+                    e.target.textContent = 'Adicionar ao Carrinho';
+                    e.target.classList.remove('bg-green-600');
+                }, 2000);
+                
+                // Re-render cart if on cart page
+                if (window.location.pathname.includes('carrinho.html')) {
+                    renderCart();
+                }
+            }
+        });
+
+        // Coupon functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'apply-coupon') {
+                const couponInput = document.getElementById('coupon');
+                const coupon = couponInput.value.trim().toUpperCase();
+                
+                if (coupon === 'AURELLE10') {
+                    alert('Cupom aplicado! 10% de desconto aplicado.');
+                    couponInput.value = '';
+                    // Here you would implement the actual discount logic
+                } else {
+                    alert('Cupom inválido. Tente novamente.');
+                }
+            }
+        });
+
+        // Checkout functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'checkout-btn') {
+                if (cart.length === 0) {
+                    alert('Seu carrinho está vazio!');
+                    return;
+                }
+                
+                // Simulate checkout process
+                const checkoutBtn = e.target;
+                const originalText = checkoutBtn.textContent;
+                
+                checkoutBtn.textContent = 'Processando...';
+                checkoutBtn.disabled = true;
+                
+                setTimeout(() => {
+                    alert('Compra finalizada com sucesso! Você será redirecionado para a página de pagamento.');
+                    // Redirect to payment page
+                    window.location.href = 'pagamento.html';
+                }, 2000);
+            }
+        });
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+            }
+        });
+
+        // Initialize
+        updateCartCount();
+        renderCart();
+
+        // Search overlay
+        (function() {
+            const openBtn = document.getElementById('search-button');
+            const overlay = document.getElementById('search-overlay');
+            const closeBtn = document.getElementById('search-close');
+            const input = document.getElementById('site-search-input');
+
+            function openOverlay() {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                setTimeout(() => input && input.focus(), 50);
+            }
+            function closeOverlay() {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+            if (openBtn && overlay) {
+                openBtn.addEventListener('click', openOverlay);
+            }
+            if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
+            overlay && overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverlay(); });
+            input && input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const q = input.value.trim();
+                    if (q) {
+                        window.location.href = `colecoes.html?q=${encodeURIComponent(q)}`;
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

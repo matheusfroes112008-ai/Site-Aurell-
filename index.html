@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURELLÉ - Joalheria Finissima</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-controls {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 1rem;
+            pointer-events: none;
+        }
+
+        .hero-control-btn {
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            border: none;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .hero-control-btn:hover {
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-indicators {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .hero-indicator {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.5);
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .hero-indicator.active {
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .jewel-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+        
+        .product-image {
+            background-color: transparent;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 0.5rem;
+        }
+
+        .newsletter-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .testimonial-card {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive improvements */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Cart animation */
+        .cart-bounce {
+            animation: cartBounce 0.6s ease-in-out;
+        }
+
+        @keyframes cartBounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateX(100%);
+            transition: all 0.3s ease-in-out;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header/Navbar -->
+    <header class="fixed w-full bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="index.html" class="title-font text-2xl font-bold text-gray-800">AURELLÉ</a>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-700 hover:text-yellow-600 font-medium">Início</a>
+                <a href="colecoes.html" class="text-gray-700 hover:text-yellow-600 font-medium">Coleções</a>
+                <a href="relogios.html" class="text-gray-700 hover:text-yellow-600 font-medium">Relógios</a>
+                <a href="sobre.html" class="text-gray-700 hover:text-yellow-600 font-medium">Sobre Nós</a>
+                <a href="contato.php" class="text-gray-700 hover:text-yellow-600 font-medium">Contato</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <a href="javascript:void(0)" id="search-button" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-search"></i></a>
+                <a href="login.php" class="text-gray-700 hover:text-yellow-600"><i class="fas fa-user"></i></a>
+                <a href="carrinho.html" class="text-gray-700 hover:text-yellow-600 relative">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="absolute -top-2 -right-2 bg-yellow-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">0</span>
+                </a>
+                <button class="md:hidden text-gray-700" id="mobile-menu-button">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="md:hidden mobile-menu fixed top-16 left-0 w-full h-screen bg-white shadow-md" id="mobile-menu">
+            <div class="p-4">
+                <a href="index.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Início</a>
+                <a href="colecoes.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Coleções</a>
+                <a href="relogios.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Relógios</a>
+                <a href="sobre.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Sobre Nós</a>
+                <a href="contato.php" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Contato</a>
+                <a href="conta.html" class="block py-3 text-gray-700 hover:text-yellow-600 border-b border-gray-200">Minha Conta</a>
+                <a href="carrinho.html" class="block py-3 text-gray-700 hover:text-yellow-600">Carrinho</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section pt-16">
+        <div class="relative min-h-[70vh]" id="hero-carousel" aria-label="Promoções em destaque">
+            <div class="hero-slide active">
+                <a href="colecoes.html" class="block h-full">
+                    <img src="img/imagem carrossel 1.png" alt="Peças exclusivas da coleção religiosa com até 40% de desconto">
+                </a>
+            </div>
+            <div class="hero-slide">
+                <a href="colecoes.html" class="block h-full">
+                    <img src="img/imagem carrosel 2.png" alt="Black Friday Aurellé com descontos até 20% off">
+                </a>
+            </div>
+
+            <div class="hero-controls">
+                <button class="hero-control-btn" data-direction="prev" aria-label="Slide anterior">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="hero-control-btn" data-direction="next" aria-label="Próximo slide">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="hero-indicators" role="tablist" aria-label="Seleção de slides">
+                <button class="hero-indicator active" data-slide="0" aria-label="Slide 1"></button>
+                <button class="hero-indicator" data-slide="1" aria-label="Slide 2"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coleções -->
+    <section id="colecoes" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="title-font text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4">Nossas Coleções</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Descubra peças exclusivas que combinam tradição e modernidade</p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8">
+                                 <!-- Coleção 1 - Diamond Tor Collection -->
+                 <div class="jewel-hover bg-gray-50 rounded-lg overflow-hidden shadow-md">
+                     <div class="relative overflow-hidden h-48 sm:h-64 product-image">
+                         <img src="img/imagem (3).jpg" alt="Coleção Diamante Tor" class="w-full h-full object-cover transition duration-500 hover:scale-105">
+                         <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300">
+                             <a href="colecoes.html#diamante" class="bg-white text-gray-800 font-bold py-2 px-4 sm:px-6 rounded-full">Ver Coleção</a>
+                         </div>
+                     </div>
+                     <div class="p-4 sm:p-6">
+                         <h3 class="title-font text-lg sm:text-xl font-bold text-gray-800 mb-2">Coleção Diamante Tor</h3>
+                         <p class="text-gray-600 mb-4 text-sm sm:text-base">Brilho eterno em designs contemporâneos</p>
+                         <a href="colecoes.html#diamante" class="text-yellow-600 font-medium hover:text-yellow-700">Explorar →</a>
+                     </div>
+                 </div>
+                 
+                 <!-- Coleção 2 - Gold Collection -->
+                 <div class="jewel-hover bg-gray-50 rounded-lg overflow-hidden shadow-md">
+                     <div class="relative overflow-hidden h-48 sm:h-64 product-image">
+                         <img src="img/imagem (2).png" alt="Coleção Ouro" class="w-full h-full object-cover transition duration-500 hover:scale-105">
+                         <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300">
+                             <a href="colecoes.html#ouro" class="bg-white text-gray-800 font-bold py-2 px-4 sm:px-6 rounded-full">Ver Coleção</a>
+                         </div>
+                     </div>
+                     <div class="p-4 sm:p-6">
+                         <h3 class="title-font text-lg sm:text-xl font-bold text-gray-800 mb-2">Coleção Ouro</h3>
+                         <p class="text-gray-600 mb-4 text-sm sm:text-base">Tradição e elegância em cada detalhe</p>
+                         <a href="colecoes.html#ouro" class="text-yellow-600 font-medium hover:text-yellow-700">Explorar →</a>
+                     </div>
+                 </div>
+                 
+                 <!-- Coleção 3 - Pearl Collection -->
+                 <div class="jewel-hover bg-gray-50 rounded-lg overflow-hidden shadow-md">
+                     <div class="relative overflow-hidden h-48 sm:h-64 product-image">
+                         <img src="img/imagem (4).jpg" alt="Coleção Pérolas" class="w-full h-full object-cover transition duration-500 hover:scale-105">
+                         <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300">
+                             <a href="colecoes.html#perolas" class="bg-white text-gray-800 font-bold py-2 px-4 sm:px-6 rounded-full">Ver Coleção</a>
+                         </div>
+                     </div>
+                     <div class="p-4 sm:p-6">
+                         <h3 class="title-font text-lg sm:text-xl font-bold text-gray-800 mb-2">Coleção Pérolas</h3>
+                         <p class="text-gray-600 mb-4 text-sm sm:text-base">Sofisticação natural para mulheres requintadas</p>
+                         <a href="colecoes.html#perolas" class="text-yellow-600 font-medium hover:text-yellow-700">Explorar →</a>
+                     </div>
+                 </div>
+                 
+                 <!-- Coleção 4 - Engagement Collection -->
+                 <div class="jewel-hover bg-gray-50 rounded-lg overflow-hidden shadow-md">
+                     <div class="relative overflow-hidden h-48 sm:h-64 product-image">
+                         <img src="img/imagem (1).jpg" alt="Coleção Noivado" class="w-full h-full object-cover transition duration-500 hover:scale-105">
+                         <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300">
+                             <a href="colecoes.html#noivado" class="bg-white text-gray-800 font-bold py-2 px-4 sm:px-6 rounded-full">Ver Coleção</a>
+                         </div>
+                     </div>
+                     <div class="p-4 sm:p-6">
+                         <h3 class="title-font text-lg sm:text-xl font-bold text-gray-800 mb-2">Coleção Noivado</h3>
+                         <p class="text-gray-600 mb-4 text-sm sm:text-base">Símbolos de amor eterno e compromisso</p>
+                         <a href="colecoes.html#noivado" class="text-yellow-600 font-medium hover:text-yellow-700">Explorar →</a>
+                     </div>
+                 </div>
+                 
+                 <!-- Coleção 5 - Watches Collection -->
+                 <div class="jewel-hover bg-gray-50 rounded-lg overflow-hidden shadow-md">
+                     <div class="relative overflow-hidden h-48 sm:h-64 product-image">
+                         <img src="img/imagem (5).jpg" alt="Coleção Relógios" class="w-full h-full object-cover transition duration-500 hover:scale-105">
+                         <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300">
+                             <a href="relogios.html" class="bg-white text-gray-800 font-bold py-2 px-4 sm:px-6 rounded-full">Ver Coleção</a>
+                         </div>
+                     </div>
+                     <div class="p-4 sm:p-6">
+                         <h3 class="title-font text-lg sm:text-xl font-bold text-gray-800 mb-2">Coleção Relógios</h3>
+                         <p class="text-gray-600 mb-4 text-sm sm:text-base">Relógios de luxo das melhores marcas</p>
+                         <a href="relogios.html" class="text-yellow-600 font-medium hover:text-yellow-700">Explorar →</a>
+                     </div>
+                 </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="colecoes.html" class="border-2 border-yellow-600 text-yellow-600 hover:bg-yellow-600 hover:text-white font-bold py-3 px-6 sm:px-8 rounded-full inline-block transition duration-300">Ver Todas as Coleções</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destaques -->
+    <section class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="title-font text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4">Destaques da Temporada</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Peças selecionadas que estão conquistando nossos clientes</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <!-- Produto 1 -->
+                <div class="jewel-hover bg-white rounded-lg overflow-hidden shadow-md">
+                    <div class="relative h-48 sm:h-64 product-image">
+                        <img src="img/Anel em Ouro Branco 18k com Topázios Azuis e Diamantes.png" alt="Anel Diamante" class="w-full h-full object-contain">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">NOVO</div>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="title-font text-lg sm:text-xl font-bold text-gray-800">Anel Solitário</h3>
+                            <span class="text-yellow-600 font-bold text-sm sm:text-base">R$ 5.890,00</span>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm sm:text-base">Diamante 0.5ct em ouro 18k</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <button class="add-to-cart bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-3 sm:px-4 rounded-full transition duration-300 text-sm" data-product="anel-solitario" data-price="5890">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Produto 2 -->
+                <div class="jewel-hover bg-white rounded-lg overflow-hidden shadow-md">
+                    <div class="relative h-48 sm:h-64 product-image">
+                        <img src="img/Colar Pérolas Duplas em Ouro Amarelo 18k.png" alt="Colar Pérolas" class="w-full h-full object-contain">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">-20%</div>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="title-font text-lg sm:text-xl font-bold text-gray-800">Colar de Pérolas</h3>
+                            <div>
+                                <span class="text-gray-400 line-through mr-2 text-sm sm:text-base">R$ 3.200,00</span>
+                                <span class="text-yellow-600 font-bold text-sm sm:text-base">R$ 2.560,00</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm sm:text-base">Pérolas cultivadas do Tahiti</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <button class="add-to-cart bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-3 sm:px-4 rounded-full transition duration-300 text-sm" data-product="colar-perolas" data-price="2560">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Produto 3 -->
+                <div class="jewel-hover bg-white rounded-lg overflow-hidden shadow-md">
+                    <div class="relative h-48 sm:h-64 product-image">
+                        <img src="img/Brincos Elegância Azul.jpg" alt="Brinco Safira" class="w-full h-full object-contain">
+                        <div class="absolute top-4 right-4 bg-yellow-600 text-white text-xs font-bold px-3 py-1 rounded-full">ESGOTANDO</div>
+                    </div>
+                    <div class="p-4 sm:p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="title-font text-lg sm:text-xl font-bold text-gray-800">Brincos Safira</h3>
+                            <span class="text-yellow-600 font-bold text-sm sm:text-base">R$ 4.250,00</span>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm sm:text-base">Safiras azuis em ouro branco 18k</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <button class="add-to-cart bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-3 sm:px-4 rounded-full transition duration-300 text-sm" data-product="brincos-safira" data-price="4250">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter-bg py-16 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="title-font text-2xl sm:text-3xl md:text-4xl font-bold mb-6">Junte-se ao Nosso Mundo</h2>
+            <p class="text-lg sm:text-xl mb-8 max-w-2xl mx-auto">Assine nossa newsletter e receba novidades, lançamentos e ofertas exclusivas</p>
+            
+            <form class="max-w-md mx-auto flex flex-col sm:flex-row gap-2" id="newsletter-form">
+                <input type="email" placeholder="Seu melhor e-mail" class="flex-grow px-4 py-3 rounded-lg sm:rounded-l-lg sm:rounded-r-none focus:outline-none text-gray-800" required>
+                <button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-6 rounded-lg sm:rounded-l-none sm:rounded-r-lg transition duration-300">Assinar</button>
+            </form>
+            
+            <p class="mt-4 text-sm opacity-80">Respeitamos sua privacidade. Nunca enviaremos spam.</p>
+        </div>
+    </section>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden items-start justify-center pt-24 z-50">
+        <div class="bg-white w-11/12 max-w-2xl rounded-lg p-4 shadow-lg">
+            <div class="flex items-center">
+                <i class="fas fa-search text-gray-500 mr-3"></i>
+                <input id="site-search-input" type="text" placeholder="Buscar produtos..." class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-600">
+                <button id="search-close" class="ml-3 text-gray-500 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-yellow-600 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="title-font text-xl font-bold mb-4">AURELLÉ</h3>
+                    <p class="text-yellow-100 text-sm">Joalheria finissima desde 1985. Criando peças que se tornam heranças familiares.</p>
+                    <div class="flex mt-6 space-x-4">
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-yellow-100 hover:text-white"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Links Rápidos</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="text-yellow-100 hover:text-white">Início</a></li>
+                        <li><a href="colecoes.html" class="text-yellow-100 hover:text-white">Coleções</a></li>
+                        <li><a href="relogios.html" class="text-yellow-100 hover:text-white">Relógios</a></li>
+                        <li><a href="sobre.html" class="text-yellow-100 hover:text-white">Sobre Nós</a></li>
+                        <li><a href="contato.php" class="text-yellow-100 hover:text-white">Contato</a></li>
+                        <li><a href="admin_login.php" class="text-yellow-100 hover:text-white">Admin</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Serviços</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Design Personalizado</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Manutenção de Joias</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Avaliação de Gemas</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Presentes Corporativos</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="title-font font-bold mb-4">Informações</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Política de Privacidade</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Termos de Serviço</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Trocas e Devoluções</a></li>
+                        <li><a href="#" class="text-yellow-100 hover:text-white">Perguntas Frequentes</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-yellow-700 mt-12 pt-8 text-center text-yellow-100 text-sm">
+                <p>&copy; 2024 AURELLÉ Joalheria. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="toast-message">Produto adicionado ao carrinho!</span>
+        </div>
+    </div>
+
+    <script>
+        // Hero carousel
+        (function() {
+            const carousel = document.getElementById('hero-carousel');
+            if (!carousel) return;
+
+            const slides = Array.from(carousel.querySelectorAll('.hero-slide'));
+            const indicators = Array.from(carousel.querySelectorAll('.hero-indicator'));
+            const controlButtons = Array.from(carousel.querySelectorAll('.hero-control-btn'));
+            const autoPlayDelay = 7000;
+            let activeIndex = 0;
+            let autoPlayId;
+
+            function updateSlides(newIndex) {
+                slides.forEach((slide, index) => {
+                    slide.classList.toggle('active', index === newIndex);
+                });
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === newIndex);
+                });
+                activeIndex = newIndex;
+            }
+
+            function goToSlide(index) {
+                const newIndex = (index + slides.length) % slides.length;
+                updateSlides(newIndex);
+            }
+
+            function nextSlide(step = 1) {
+                goToSlide(activeIndex + step);
+            }
+
+            function startAutoPlay() {
+                stopAutoPlay();
+                autoPlayId = setInterval(() => nextSlide(1), autoPlayDelay);
+            }
+
+            function stopAutoPlay() {
+                if (autoPlayId) {
+                    clearInterval(autoPlayId);
+                    autoPlayId = null;
+                }
+            }
+
+            controlButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const direction = button.dataset.direction === 'prev' ? -1 : 1;
+                    nextSlide(direction);
+                    startAutoPlay();
+                });
+            });
+
+            indicators.forEach(indicator => {
+                indicator.addEventListener('click', () => {
+                    const slideIndex = parseInt(indicator.dataset.slide, 10);
+                    if (!Number.isNaN(slideIndex)) {
+                        goToSlide(slideIndex);
+                        startAutoPlay();
+                    }
+                });
+            });
+
+            carousel.addEventListener('mouseenter', stopAutoPlay);
+            carousel.addEventListener('mouseleave', startAutoPlay);
+
+            startAutoPlay();
+        })();
+
+        // Cart functionality
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let cartTotal = 0;
+
+        // Update cart count
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            cartCount.textContent = cart.length;
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            
+            // Remove any existing show class first
+            toast.classList.remove('show');
+            
+            // Force a reflow to ensure the transition works
+            toast.offsetHeight;
+            
+            // Add show class
+            toast.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Add to cart functionality
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const product = this.dataset.product;
+                const price = parseFloat(this.dataset.price);
+                
+                // Add to cart
+                cart.push({
+                    id: product,
+                    name: this.closest('.jewel-hover').querySelector('h3').textContent,
+                    price: price,
+                    quantity: 1
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Update cart count
+                updateCartCount();
+                
+                // Show toast
+                showToast('Produto adicionado ao carrinho!');
+                
+                // Cart animation
+                const cartCount = document.getElementById('cart-count');
+                cartCount.classList.add('cart-bounce');
+                setTimeout(() => {
+                    cartCount.classList.remove('cart-bounce');
+                }, 600);
+            });
+        });
+
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+            }
+        });
+
+        // Newsletter form
+        document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            
+            // Simulate newsletter subscription
+            showToast('Newsletter assinada com sucesso!');
+            this.reset();
+        });
+
+        // Search overlay
+        (function() {
+            const openBtn = document.getElementById('search-button');
+            const overlay = document.getElementById('search-overlay');
+            const closeBtn = document.getElementById('search-close');
+            const input = document.getElementById('site-search-input');
+
+            // Seletores dos produtos
+            const destaques = document.querySelectorAll('.jewel-hover.bg-white');
+            const colecoes = document.querySelectorAll('#colecoes .jewel-hover.bg-gray-50');
+
+            function filtrarProdutos(q) {
+                const termo = q.trim().toLowerCase();
+                let algumVisivel = false;
+                // Filtra destaques
+                destaques.forEach(card => {
+                    const nome = card.querySelector('h3')?.textContent?.toLowerCase() || '';
+                    const match = (!termo || nome.includes(termo));
+                    card.style.display = match ? '' : 'none';
+                    if (match) algumVisivel = true;
+                });
+                // Filtra coleções
+                colecoes.forEach(card => {
+                    const nome = card.querySelector('h3')?.textContent?.toLowerCase() || '';
+                    const match = (!termo || nome.includes(termo));
+                    card.style.display = match ? '' : 'none';
+                    if (match) algumVisivel = true;
+                });
+                // Se nenhum produto visível, pode exibir uma mensagem (opcional)
+                const msgId = 'search-no-results';
+                let msg = document.getElementById(msgId);
+                if (!algumVisivel) {
+                    if (!msg) {
+                        msg = document.createElement('div');
+                        msg.id = msgId;
+                        msg.className = 'text-center text-gray-500 mt-8';
+                        msg.textContent = 'Nenhum produto encontrado.';
+                        overlay.querySelector('div.bg-white')?.appendChild(msg);
+                    }
+                } else if (msg) {
+                    msg.remove();
+                }
+            }
+
+            function openOverlay() {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                setTimeout(() => input && input.focus(), 50);
+            }
+            function closeOverlay() {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                filtrarProdutos(''); // Restaura todos ao fechar
+            }
+            if (openBtn && overlay) {
+                openBtn.addEventListener('click', openOverlay);
+            }
+            if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
+            overlay && overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOverlay(); });
+            input && input.addEventListener('input', (e) => {
+                filtrarProdutos(input.value);
+            });
+        })();
+
+        // Initialize cart count
+        updateCartCount();
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (mobileMenu.classList.contains('open')) {
+                        mobileMenu.classList.remove('open');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
